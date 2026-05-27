@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#11130f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Bolaget Compass">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Bolaget Compass</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./assets/icon-192.png">
+    <link rel="icon" href="./assets/icon-192.png">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img class="brand-mark" src="./assets/icon-192.png" alt="">
+          <div>
+            <p class="eyebrow">Systembolaget compass</p>
+            <h1>Nearest Bolaget</h1>
+          </div>
+        </div>
+        <p class="status-pill" id="statusText">Ready</p>
+      </header>
+
+      <section class="hero-grid" aria-label="Nearest Systembolaget compass">
+        <div class="compass-panel">
+          <div class="compass" aria-hidden="true">
+            <div class="dial-label north">N</div>
+            <div class="dial-label east">E</div>
+            <div class="dial-label south">S</div>
+            <div class="dial-label west">W</div>
+            <div class="needle" id="needle">
+              <span class="needle-red"></span>
+              <span class="needle-white"></span>
+            </div>
+            <div class="pivot"></div>
+          </div>
+
+          <div class="readout">
+            <p class="distance" id="distanceValue">--</p>
+            <p class="direction" id="directionValue">Waiting for location</p>
+          </div>
+        </div>
+
+        <div class="info-panel">
+          <div>
+            <p class="label">Nearest store</p>
+            <h2 id="storeName">Location needed</h2>
+            <p class="store-meta" id="storeMeta">GPS chooses from local store data.</p>
+          </div>
+
+          <div class="metrics" aria-label="Compass metrics">
+            <div>
+              <span>Bearing</span>
+              <strong id="bearingValue">--</strong>
+            </div>
+            <div>
+              <span>Heading</span>
+              <strong id="headingValue">--</strong>
+            </div>
+            <div>
+              <span>Accuracy</span>
+              <strong id="accuracyValue">--</strong>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary-action" id="locateButton" type="button">Use GPS</button>
+            <button id="compassButton" type="button">Compass</button>
+            <button id="mapsButton" type="button" disabled>Maps</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="nearby-section" aria-labelledby="nearbyTitle">
+        <div class="section-heading">
+          <h2 id="nearbyTitle">Nearby</h2>
+          <p id="sourceText">Loading stores...</p>
+        </div>
+        <ol class="nearby-list" id="nearbyList"></ol>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
