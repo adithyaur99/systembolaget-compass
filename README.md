@@ -18,6 +18,10 @@ Open [http://localhost:5173](http://localhost:5173). For a desktop demo without 
 http://localhost:5173/?lat=59.33022&lng=18.05920
 ```
 
+## iPhone GPS notes
+
+Use the GitHub Pages URL, not `file://` or a LAN `http://` address. iOS only allows GPS on HTTPS pages, and Safari may keep an old service-worker cache. If the phone looks stuck, open the page with `?v=2` once to force a fresh copy.
+
 ## Store data
 
 The app uses `data/systembolaget-stores.json`, filtered to real stores only (`isAgent == false`). The current file contains 451 stores.

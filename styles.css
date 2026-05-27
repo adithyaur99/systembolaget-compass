@@ -331,6 +331,35 @@ h1 {
   gap: 0.65rem;
 }
 
+.gps-panel {
+  min-height: 2.7rem;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.72rem 0.85rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.gps-panel.good {
+  color: var(--mint);
+  background: rgba(123, 196, 162, 0.08);
+}
+
+.gps-panel.warn {
+  color: var(--amber);
+  background: rgba(232, 193, 93, 0.08);
+}
+
+.gps-panel.bad {
+  color: #ff9b8b;
+  background: rgba(240, 90, 66, 0.1);
+}
+
 .primary-action {
   border-color: rgba(232, 193, 93, 0.5);
   background: linear-gradient(180deg, #efcd73, #d49e3f);

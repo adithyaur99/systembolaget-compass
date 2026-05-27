@@ -12,7 +12,7 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./assets/icon-192.png">
     <link rel="icon" href="./assets/icon-192.png">
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css?v=2">
   </head>
   <body>
     <main class="app-shell">
@@ -69,8 +69,10 @@
             </div>
           </div>
 
+          <p class="gps-panel" id="gpsPanel">GPS not requested</p>
+
           <div class="actions">
-            <button class="primary-action" id="locateButton" type="button">Use GPS</button>
+            <button class="primary-action" id="locateButton" type="button">Start GPS</button>
             <button id="compassButton" type="button">Compass</button>
             <button id="mapsButton" type="button" disabled>Maps</button>
           </div>
@@ -86,6 +88,6 @@
       </section>
     </main>
 
-    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/main.js?v=2"></script>
   </body>
 </html>

@@ -8,6 +8,7 @@ import {
 } from "./geo.js";
 
 const STORE_DATA_URL = "./data/systembolaget-stores.json";
+const APP_VERSION = "gps-v2";
 
 const elements = {
   statusText: document.querySelector("#statusText"),
@@ -23,6 +24,7 @@ const elements = {
   compassButton: document.querySelector("#compassButton"),
   mapsButton: document.querySelector("#mapsButton"),
   nearbyList: document.querySelector("#nearbyList"),
+  gpsPanel: document.querySelector("#gpsPanel"),
   sourceText: document.querySelector("#sourceText")
 };
 
@@ -39,6 +41,11 @@ const state = {
 function setStatus(message, tone = "") {
   elements.statusText.textContent = message;
   elements.statusText.className = `status-pill ${tone}`.trim();
+}
+
+function setGpsPanel(message, tone = "") {
+  elements.gpsPanel.textContent = message;
+  elements.gpsPanel.className = `gps-panel ${tone}`.trim();
 }
 
 function formatDegrees(value) {
@@ -120,6 +127,10 @@ function updatePosition(coords) {
   state.accuracy = coords.accuracy;
   state.nearest = nearestStores(state.position, state.stores, 3);
   setStatus("GPS locked");
+  setGpsPanel(
+    `GPS fixed at ${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)} with ${Math.round(coords.accuracy ?? 0)} m accuracy.`,
+    "good"
+  );
   render();
 }
 
@@ -133,32 +144,65 @@ function handleGeoError(error) {
     2: "GPS unavailable",
     3: "GPS timeout"
   };
+  const details = {
+    1: "Location permission was denied. In iPhone Settings, allow Safari or this Home Screen app to use location.",
+    2: "iPhone could not return a position. Check Location Services and try outside/near a window.",
+    3: "iPhone did not return a position in time. Try again with a clearer signal."
+  };
 
   setStatus(messages[error.code] ?? "GPS error", "bad");
+  setGpsPanel(error.message || details[error.code] || "iPhone did not return GPS coordinates.", "bad");
 }
 
-function startLocationWatch() {
-  if (!("geolocation" in navigator)) {
-    setStatus("No GPS support", "bad");
-    return;
-  }
+function geoOptions() {
+  return {
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 20000
+  };
+}
 
-  if (!window.isSecureContext) {
-    setStatus("HTTPS needed", "warn");
-    return;
-  }
-
-  setStatus("Finding GPS...", "warn");
-
+function startLocationWatchAfterFix() {
   if (state.watchId != null) {
     navigator.geolocation.clearWatch(state.watchId);
   }
 
   state.watchId = navigator.geolocation.watchPosition(handleGeoSuccess, handleGeoError, {
     enableHighAccuracy: true,
-    maximumAge: 10000,
-    timeout: 15000
+    maximumAge: 5000,
+    timeout: 30000
   });
+}
+
+function startLocationWatch() {
+  if (!("geolocation" in navigator)) {
+    setStatus("No GPS support", "bad");
+    setGpsPanel("This browser does not expose geolocation.", "bad");
+    return;
+  }
+
+  if (!window.isSecureContext) {
+    setStatus("HTTPS needed", "warn");
+    setGpsPanel("GPS only works from HTTPS or localhost. Use the GitHub Pages URL on iPhone.", "warn");
+    return;
+  }
+
+  setStatus("Requesting GPS...", "warn");
+  setGpsPanel("Waiting for iPhone location permission and first GPS fix...", "warn");
+  elements.locateButton.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      elements.locateButton.disabled = false;
+      handleGeoSuccess(position);
+      startLocationWatchAfterFix();
+    },
+    (error) => {
+      elements.locateButton.disabled = false;
+      handleGeoError(error);
+    },
+    geoOptions()
+  );
 }
 
 function applyHeading(event) {
@@ -235,6 +279,10 @@ async function loadStores() {
   state.stores = data.stores;
   state.source = data.source;
   elements.sourceText.textContent = `${data.stores.length} stores - source ${data.source.sourceUpdatedAt.slice(0, 10)}`;
+
+  if (state.position) {
+    state.nearest = nearestStores(state.position, state.stores, 3);
+  }
 }
 
 function bindControls() {
@@ -245,7 +293,8 @@ function bindControls() {
 
 async function registerServiceWorker() {
   if ("serviceWorker" in navigator && window.isSecureContext) {
-    await navigator.serviceWorker.register("./service-worker.js");
+    const registration = await navigator.serviceWorker.register(`./service-worker.js?v=${APP_VERSION}`);
+    await registration.update();
   }
 }
 
