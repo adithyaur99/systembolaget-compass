@@ -2,6 +2,10 @@
 
 A small PWA that points to the nearest Systembolaget store in Sweden.
 
+## Native iOS app
+
+The native SwiftUI app lives in `BolagetCompass/`. Open `BolagetCompass/BolagetCompass.xcodeproj` in Xcode to run it on iPhone. It uses Core Location GPS + heading updates and keeps the UI down to a compass, distance, and small status/store caption.
+
 ## Why web app first
 
 An iPhone web app can use GPS from Safari or a Home Screen install. Compass heading also works on iOS after a user gesture, but the page must run from `https://` or `localhost`. This avoids Xcode signing, App Store review, and native app setup while still giving the core experience.
